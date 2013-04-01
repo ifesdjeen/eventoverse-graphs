@@ -20,13 +20,8 @@ $(()->
 
   bar_chart = new Eventoverse.Graphs.Canvas("#bar_chart", attrs)
   bar_chart.addElement(Eventoverse.Graphs.Histogram)
-  bar_chart.render(Eventoverse.RandomData.generate(20))
+  bar_chart.render(Eventoverse.RandomData.generate(20)))
 
-  # bar_chart.addElement(Eventoverse.Graphs.Brush)
-
-  # d3.json("/demo_data/bar_chart.json", (all_data)->
-  #   )
-  )
 class @Eventoverse.RandomData
   @counter: 100
   @generate_one: ()->
