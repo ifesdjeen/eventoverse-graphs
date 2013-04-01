@@ -1,8 +1,10 @@
 # Eventoverse Graphs
 
-This is a simple graphing library, extracted from Eventoverse, which is a monitoring service we've been developing for the last 2 years.
-It's primary intention is not to replace tools like Richshaw or nvd3, we've tried to provide a toolset as close to d3 as possible,
-instead of making a wrapper that hides functionality (I apologize in advance, since maybe it's my lack of understanding that have prevented
+This is a simple graphing library, extracted from Eventoverse, which is a monitoring
+service we've been developing for the last 2 years. It's primary intention is not to
+replace tools like Richshaw or nvd3, we've tried to provide a toolset as close to d3
+as possible, instead of making a wrapper that hides functionality (I apologize in
+advance, since maybe it's my lack of understanding that have prevented
 me from extending other tools, not library intention).
 
 # Project goals

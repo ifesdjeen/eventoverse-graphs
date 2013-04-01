@@ -1,28 +1,32 @@
 $(()->
   attrs =
     x:
-      caption: "Last 400 data points"
+      caption: "Random time data"
     y:
-      caption: "Response time, seconds"
+      caption: "Random value data, seconds"
       buffer_size: 400
 
+  line_chart = new Eventoverse.Graphs.Canvas("#line_chart", attrs)
+  line_chart.addElement(Eventoverse.Graphs.Line)
+  line_chart.addElement(Eventoverse.Graphs.MinLine)
+  line_chart.addElement(Eventoverse.Graphs.MaxLine)
+  line_chart.addElement(Eventoverse.Graphs.Tooltip, {tip_formatter: (d)-> "123"})
+  line_chart.render(Eventoverse.RandomData.generate(20))
 
-  Eventoverse.canvas = new Eventoverse.Graphs.Canvas("#line_chart", attrs)
-  Eventoverse.canvas.addElement(Eventoverse.Graphs.Histogram)
+  area_chart = new Eventoverse.Graphs.Canvas("#area_chart", attrs)
+  area_chart.addElement(Eventoverse.Graphs.Area)
+  area_chart.addElement(Eventoverse.Graphs.Tooltip, {tip_formatter: (d)-> "123"})
+  area_chart.render(Eventoverse.RandomData.generate(20))
 
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.Line)
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.Area)
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.Brush)
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.MinLine)
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.MaxLine)
-  # Eventoverse.canvas.addElement(Eventoverse.Graphs.Tooltip, {tip_formatter: (d)-> "123"})
-  Eventoverse.canvas.render(Eventoverse.RandomData.generate(20))
+  bar_chart = new Eventoverse.Graphs.Canvas("#bar_chart", attrs)
+  bar_chart.addElement(Eventoverse.Graphs.Histogram)
+  bar_chart.render(Eventoverse.RandomData.generate(20))
 
-  # d3.json("/demo_data/line_chart.json", (all_data)->
+  # bar_chart.addElement(Eventoverse.Graphs.Brush)
+
+  # d3.json("/demo_data/bar_chart.json", (all_data)->
   #   )
   )
-
-
 class @Eventoverse.RandomData
   @counter: 100
   @generate_one: ()->

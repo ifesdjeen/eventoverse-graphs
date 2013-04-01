@@ -2,19 +2,37 @@
 (function() {
 
   $(function() {
-    var attrs;
+    var area_chart, attrs, bar_chart, line_chart;
     attrs = {
       x: {
-        caption: "Last 400 data points"
+        caption: "Random time data"
       },
       y: {
-        caption: "Response time, seconds",
+        caption: "Random value data, seconds",
         buffer_size: 400
       }
     };
-    Eventoverse.canvas = new Eventoverse.Graphs.Canvas("#line_chart", attrs);
-    Eventoverse.canvas.addElement(Eventoverse.Graphs.Histogram);
-    return Eventoverse.canvas.render(Eventoverse.RandomData.generate(20));
+    line_chart = new Eventoverse.Graphs.Canvas("#line_chart", attrs);
+    line_chart.addElement(Eventoverse.Graphs.Line);
+    line_chart.addElement(Eventoverse.Graphs.MinLine);
+    line_chart.addElement(Eventoverse.Graphs.MaxLine);
+    line_chart.addElement(Eventoverse.Graphs.Tooltip, {
+      tip_formatter: function(d) {
+        return "123";
+      }
+    });
+    line_chart.render(Eventoverse.RandomData.generate(20));
+    area_chart = new Eventoverse.Graphs.Canvas("#area_chart", attrs);
+    area_chart.addElement(Eventoverse.Graphs.Area);
+    area_chart.addElement(Eventoverse.Graphs.Tooltip, {
+      tip_formatter: function(d) {
+        return "123";
+      }
+    });
+    area_chart.render(Eventoverse.RandomData.generate(20));
+    bar_chart = new Eventoverse.Graphs.Canvas("#bar_chart", attrs);
+    bar_chart.addElement(Eventoverse.Graphs.Histogram);
+    return bar_chart.render(Eventoverse.RandomData.generate(20));
   });
 
   this.Eventoverse.RandomData = (function() {
