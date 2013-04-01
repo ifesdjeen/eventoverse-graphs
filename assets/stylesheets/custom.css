@@ -1,0 +1,63 @@
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.line.min, .line.max {
+  stroke-width: 1px;
+  opacity: .25;
+}
+.line.max {
+  stroke: red;
+}
+
+.line.min {
+  stroke: blue;
+}
+
+
+.rules .minor {
+  stroke: #BBB;
+}
+
+.rules .domain {
+  fill: none;
+}
+
+.tick {
+  stroke-width: 1px;
+  opacity: .1;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+circle {
+  stroke: #FFF;
+  stroke-width: 2px;
+}
+
+.area {
+  fill: steelblue;
+}
+
+.bar {
+  fill: #3880aa;
+}

@@ -1,0 +1,9 @@
+.chart rect {
+   stroke: white;
+   fill: steelblue;
+}
+
+
+.chart g g text {
+    z-index: 10000;
+}
