@@ -15,7 +15,7 @@ class @Eventoverse.Graphs.Canvas
     @elements = []
 
     @width = 1000 - @defaults.margin.left - @defaults.margin.right
-    @height = 200 - @defaults.margin.top - @defaults.margin.bottom
+    @height = 500 - @defaults.margin.top - @defaults.margin.bottom
 
     @x = d3.time.scale()
       .range([0, @width])
@@ -79,7 +79,6 @@ class @Eventoverse.Graphs.Canvas
     @axes.append("g")
       .classed("y grid", true)
 
-
     renderedYAxis = @axes.append("g")
       .classed("y axis", true)
 
@@ -109,12 +108,19 @@ class @Eventoverse.Graphs.Canvas
   renderAxes: (all_data)->
     data = Eventoverse.Utils.mergeData(all_data)
 
-    @x.domain(d3.extent(data, (d)-> d.x))
-
     very_min = d3.min(data, (d)-> d.y)
     very_max = d3.max(data, (d)-> d.y)
 
-    @y.domain([very_min - 1, very_max + 1])
+    very_min_x = d3.min(data, (d)-> d.x)
+    very_max_x = d3.max(data, (d)-> d.x)
+
+    x_step = (very_max_x - very_min_x) / data.length
+
+    @x.domain(d3.extent(data, (d, i)-> very_min_x + (x_step * i) ))
+
+    extension = (very_max - very_min) / 10
+    extension_min = (very_min - extension) < 0 ? 0 : (very_min - extension)
+    @y.domain([extension_min, very_max + extension])
 
     @svg.select(".x.axis").call(@xAxis())
     @svg.select(".y.axis").call(@yAxis())
@@ -123,3 +129,9 @@ class @Eventoverse.Graphs.Canvas
     @svg.select(".y.grid").call(@yAxis().tickSize(-@width,0,0).tickFormat(""))
 
     this
+
+  colorForIndex: (i)->
+    if (@data.length < 3)
+      colorbrewer.Spectral[3][i]
+    else
+      colorbrewer.Spectral[@data.length][i]

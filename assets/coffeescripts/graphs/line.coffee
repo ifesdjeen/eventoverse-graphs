@@ -1,3 +1,23 @@
+class @Eventoverse.Graphs.LineColors
+  constructor: (@canvas)->
+
+  renderColor: (key, i)->
+    $(@canvas.selector).append($("<div>#{key}</div>").attr('style', "color: #{@canvas.colorForIndex(i)}"))
+
+  render: (data)->
+    _.map(data, (a, i) => @renderColor(a.key, i))
+
+class @Eventoverse.Graphs.Lines
+  constructor: (@canvas)->
+
+  renderLine: (data, i)->
+    line = new Eventoverse.Graphs.Line(@canvas)
+    line.render(data, i)
+
+  render: (data)->
+    new Eventoverse.Graphs.LineColors(@canvas).render(data)
+    _.map(data, (a, i) => @renderLine(a,i))
+
 class @Eventoverse.Graphs.Line
   constructor: (@canvas)->
 
@@ -9,15 +29,15 @@ class @Eventoverse.Graphs.Line
       .x((d)=> @canvas.x(d.x))
       .y((d)=> @canvas.y(d.y))
 
-  render: (data)->
-    @canvas.svg.selectAll("path.eventoverse_graph_line").remove()
+  render: (data, identifier = 0)->
+    @canvas.svg.selectAll("path.eventoverse_graph_line#{identifier}").remove()
 
     @path = @canvas.svg.append("path")
       .datum(data.values)
       .attr("class", "line eventoverse_graph_line")
       .attr("clip-path", "url(#clip)")
       .attr("d", @line())
-      .style("stroke", data.color)
+      .style("stroke", @canvas.colorForIndex(identifier))
 
     this
 
@@ -102,8 +122,6 @@ class @Eventoverse.Graphs.MaxLine extends @Eventoverse.Graphs.AggregateLine
       .attr("d", @line())
       .attr('stroke-width', 2)
       .attr('stroke', "green")
-
-
 
 class @Eventoverse.Graphs.Area
   constructor: (@canvas)->

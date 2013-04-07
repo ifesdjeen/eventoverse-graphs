@@ -7,6 +7,7 @@ class @Eventoverse.Graphs.Histogram
           .enter().append("rect")
           .attr("class", "bar")
           .attr("x", (d) => @canvas.x(d.x))
-          .attr("width", (d, i) => @canvas.width / data.values.length )
+          # .attr("width", (d, i) => @canvas.width / data.values.length )
+          .attr("width", (d, i) => @canvas.width / 24)
           .attr("y", (d) => @canvas.y(d.y))
           .attr("height", (d) => @canvas.height - @canvas.y(d.y))
