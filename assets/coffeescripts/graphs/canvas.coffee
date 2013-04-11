@@ -12,6 +12,8 @@ class @Eventoverse.Graphs.Canvas
       left: 50
 
   constructor: (@selector, @attrs)->
+    @colors = d3.scale.category10()
+
     @elements = []
 
     @width = 1000 - @defaults.margin.left - @defaults.margin.right
@@ -108,6 +110,11 @@ class @Eventoverse.Graphs.Canvas
   renderAxes: (all_data)->
     data = Eventoverse.Utils.mergeData(all_data)
 
+    @x0 = d3.scale.ordinal()
+      .rangeRoundBands([0, @width], .1)
+
+    @x0.domain(_.map data, (d)->d.x)
+
     very_min = d3.min(data, (d)-> d.y)
     very_max = d3.max(data, (d)-> d.y)
 
@@ -131,7 +138,4 @@ class @Eventoverse.Graphs.Canvas
     this
 
   colorForIndex: (i)->
-    if (@data.length < 3)
-      colorbrewer.Spectral[3][i]
-    else
-      colorbrewer.Spectral[@data.length][i]
+    @colors(i)

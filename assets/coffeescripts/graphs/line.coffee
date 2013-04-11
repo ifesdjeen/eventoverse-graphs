@@ -1,12 +1,18 @@
 class @Eventoverse.Graphs.LineColors
   constructor: (@canvas)->
 
-  renderColor: (key, i)->
-    $(@canvas.selector).append($("<div>#{key}</div>").attr('style', "color: #{@canvas.colorForIndex(i)}"))
+  renderColor: (key, i, dp, div)->
+    max = d3.max dp.values, (a)-> a.y
+    min = d3.min dp.values, (a)-> a.y
+    median = d3.median dp.values, (a)-> a.y
+
+    div.append($("<div>#{key}, max: #{max}, min: #{min}, median: #{median}</div>").attr('style', "color: #{@canvas.colorForIndex(i)}; "))
 
   render: (data)->
-    _.map(data, (a, i) => @renderColor(a.key, i))
-
+    $(@canvas.selector).find(".line_colors").remove()
+    div = $("<div class='line_colors'</div>")
+    _.map(data, (a, i) => @renderColor(a.key, i, a, div))
+    $(@canvas.selector).append(div)
 class @Eventoverse.Graphs.Lines
   constructor: (@canvas)->
 
@@ -29,12 +35,14 @@ class @Eventoverse.Graphs.Line
       .x((d)=> @canvas.x(d.x))
       .y((d)=> @canvas.y(d.y))
 
-  render: (data, identifier = 0)->
+  render: (data)->
+    identifier = data.values[0]["identifier"]
+
     @canvas.svg.selectAll("path.eventoverse_graph_line#{identifier}").remove()
 
     @path = @canvas.svg.append("path")
       .datum(data.values)
-      .attr("class", "line eventoverse_graph_line")
+      .attr("class", "line eventoverse_graph_line#{identifier}")
       .attr("clip-path", "url(#clip)")
       .attr("d", @line())
       .style("stroke", @canvas.colorForIndex(identifier))
