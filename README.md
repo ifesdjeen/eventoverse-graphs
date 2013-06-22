@@ -9,11 +9,6 @@ as possible, instead of making a wrapper that hides functionality (I apologize i
 advance, since maybe it's my lack of understanding that have prevented
 me from extending other tools, not library intention).
 
-# Y U COFFEESCRIPT?
-
-No proper reason. I've asked around, everyone said it's cool to use CoffeeScript, I
-tried it out, it was ok to use it, so I sticked to it.
-
 # Project goals
 
   * provide a simple interface for visualizing time series
@@ -26,7 +21,8 @@ tried it out, it was ok to use it, so I sticked to it.
 To start quickly, check out this repository, run
 
 ```
-jekyll --auto --server
+bundle install --binstubs
+./bin/jekyll serve -w --trace
 ```
 
 And start hacking. All the examples are under [demo.coffee](https://github.com/ifesdjeen/eventoverse-graphs/blob/master/assets/coffeescripts/graphs.coffee)
