@@ -15,7 +15,8 @@ this.Eventoverse.Graphs.LineColors = new JS.Class({
     median = d3.median(dp.values, function(a) {
       return a.y;
     });
-    return div.append($("<div>" + key + ", max: " + max + ", min: " + min + ", median: " + median + "</div>").attr('style', "color: " + (this.canvas.colorForIndex(i)) + "; "));
+    return div.append($("<div>" + key + ", max: " + max + ", min: " + min + ", median: " + median + "</div>")
+                      .attr('style', "color: " + (this.canvas.colorForIndex(i)) + "; "));
   },
 
   render: function(data) {
@@ -137,7 +138,12 @@ this.Eventoverse.Graphs.MinLine = new JS.Class(this.Eventoverse.Graphs.Aggregate
         y: this.min_y
       }
     ];
-    return this.canvas.svg.append("path").datum(min_line).attr("class", "line min").attr("d", this.line()).attr('stroke-width', 2).attr('stroke', "green");
+    return this.canvas.svg.append("path")
+      .datum(min_line)
+      .attr("class", "line min")
+      .attr("d", this.line())
+      .attr('stroke-width', 2)
+      .attr('stroke', "green");
   }
 });
 
@@ -160,7 +166,12 @@ this.Eventoverse.Graphs.MaxLine = new JS.Class(this.Eventoverse.Graphs.Aggregate
       }
     ];
     this.canvas.svg.selectAll("path.max").remove();
-    return this.canvas.svg.append("path").datum(max_line).attr("class", "line max").attr("d", this.line()).attr('stroke-width', 2).attr('stroke', "green");
+    return this.canvas.svg.append("path")
+      .datum(max_line)
+      .attr("class", "line max")
+      .attr("d", this.line())
+      .attr('stroke-width', 2)
+      .attr('stroke', "green");
   }
 
 });
@@ -186,7 +197,11 @@ this.Eventoverse.Graphs.Area = new JS.Class({
 
   render: function(data) {
     this.canvas.svg.selectAll("path.eventoverse_graph_area").remove();
-    this.path = this.canvas.svg.append("path").datum(data.values).attr("class", "area eventoverse_graph_area").attr("d", this.area());
+    this.path = this.canvas.svg
+      .append("path")
+      .datum(data.values)
+      .attr("class", "area eventoverse_graph_area")
+      .attr("d", this.area());
     return this;
   }
 });
