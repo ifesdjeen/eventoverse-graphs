@@ -1,13 +1,8 @@
 JS.require('Eventoverse', function (a) {
   var area_chart, attrs, bar_chart, line_chart;
   attrs = {
-    x: {
-      caption: "Random time data"
-    },
-    y: {
-      caption: "Random value data, seconds",
-      buffer_size: 400
-    }
+    x: { caption: "Random time data" },
+    y: { caption: "Random value data, seconds" }
   };
 
   line_chart = new Eventoverse.Graphs.Canvas("#line_chart", attrs);

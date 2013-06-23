@@ -13,7 +13,7 @@ this.Eventoverse.Graphs.Canvas = (function() {
       bottom: 30,
       left: 50
     },
-    base_width: 1000,
+    base_width: 900,
     base_height: 250
   };
 
