@@ -25,20 +25,7 @@ bundle install --binstubs
 ./bin/jekyll serve -w --trace
 ```
 
-And start hacking. All the examples are under [demo.coffee](https://github.com/ifesdjeen/eventoverse-graphs/blob/master/assets/coffeescripts/graphs.coffee)
-
-In order to launch coffeescript compiler, install it via [npm](https://npmjs.org/) by running
-
-```
-npm install coffee
-```
-
-Script itself is:
-
-```
-./compile.sh
-# coffee --watch --compile --output assets/javascripts/compiled assets/coffeescripts/
-```
+Now, you can visit [http://localhost:4000](http://localhost:4000) and start modifying `graphs.js` file.
 
 # Project status
 

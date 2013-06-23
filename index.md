@@ -11,6 +11,8 @@ replace tools like [Rickshaw](http://code.shutterstock.com/rickshaw/) or [nvd3](
 we've tried to provide a toolset as close to d3 as possible, instead of making a wrapper
 that hides functionality.
 
+You can [find this project on GitHub](http://github.com/ifesdjeen/eventoverse-graphs).
+
 ## Simple Line Chart
 
 <div id="line_chart"></div>
@@ -131,3 +133,5 @@ and `y` is a numerical value):
   }
 ]
 ```
+
+## Developing
