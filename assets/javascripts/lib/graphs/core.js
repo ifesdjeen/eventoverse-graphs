@@ -1,6 +1,8 @@
 this.Eventoverse = {debug: false};
 this.Eventoverse.Graphs = {};
 
+Eventoverse.version = "0.1.0";
+
 Eventoverse.log = function(){
   if (!Eventoverse.debug)
     return;
