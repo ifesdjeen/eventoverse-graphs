@@ -4,19 +4,21 @@ this.Eventoverse.Graphs.LineColors = new JS.Class({
   },
 
   renderColor: function(key, i, dp, div) {
+    if (key == "null-keeper") return;
+
     var max, median, min;
 
-    max = d3.max(dp.values, function(a) {
+    max = d3.round(d3.max(dp.values, function(a) {
       return a.y;
-    });
-    min = d3.min(dp.values, function(a) {
+    }), 3);
+    min = d3.round(d3.min(dp.values, function(a) {
       return a.y;
-    });
-    median = d3.median(dp.values, function(a) {
+    }), 3);
+    median = d3.round(d3.median(dp.values, function(a) {
       return a.y;
-    });
-    return div.append($("<div>" + key + ", max: " + max + ", min: " + min + ", median: " + median + "</div>")
-                      .attr('style', "color: " + (this.canvas.colorForIndex(i)) + "; "));
+    }), 3);
+    div.append($("<div><b>" + key + "</b>: max: " + max + ", min: " + min + ", median: " + median + "</div>")
+               .attr('style', "color: " + this.canvas.colorForIndex(i) + "; "));
   },
 
   render: function(data) {
@@ -38,10 +40,11 @@ this.Eventoverse.Graphs.Lines = new JS.Class({
     this.canvas = canvas;
   },
   renderLine: function(data, i) {
-    var line;
+    if (data.key == "null-keeper" || _.isEmpty(data.values)) return;
 
-    line = new Eventoverse.Graphs.Line(this.canvas);
-    return line.render(data, i);
+    var line = new Eventoverse.Graphs.Line(this.canvas);
+    line.render(data, i);
+    // return line.render(data, i);
   },
   render: function(data) {
     var _this = this;
@@ -71,13 +74,51 @@ this.Eventoverse.Graphs.Line = new JS.Class({
     });
   },
 
+  splitGaps: function(values) {
+    var sum = [];
+    _.reduce(
+      _.map(values, function(i) {return i.x;}), function (a, b) {
+        sum.push(b - a);
+        return b;
+      });
+
+    var gapTheshold = d3.quantile(sum, 0.9);
+    var newvals = [];
+    var buffer = [];
+
+    buffer.push(values[0]);
+    _.reduce(values, function (a, b, c) {
+      if ((b.x - a.x) <= gapTheshold) {
+        buffer.push(b);
+      } else {
+        newvals.push(buffer);
+        buffer = [b];
+      }
+
+      return b;
+    });
+    newvals.push(buffer);
+
+    return newvals;
+  },
   render: function(data) {
-    var identifier;
+    var identifier, splitValues, _this;
+    _this = this;
 
     identifier = data.values[0]["identifier"];
     this.canvas.svg.selectAll("path.eventoverse_graph_line" + identifier).remove();
-    this.path = this.canvas.svg.append("path").datum(data.values).attr("class", "line eventoverse_graph_line" + identifier).attr("clip-path", "url(#clip)").attr("d", this.line()).style("stroke", this.canvas.colorForIndex(identifier));
-    return this;
+
+    splitValues = this.splitGaps(data.values);
+
+    _.each(splitValues, function(values) {
+      _this.path = _this.canvas.svg
+        .append("path")
+        .datum(values)
+        .attr("class", "line eventoverse_graph_line" + identifier)
+        .attr("clip-path", "url(#clip)")
+        .attr("d", _this.line())
+        .style("stroke", _this.canvas.colorForIndex(identifier));
+    });
   }
 });
 

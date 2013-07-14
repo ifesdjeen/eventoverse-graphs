@@ -6,10 +6,14 @@ this.Eventoverse.Graphs.Tooltips = new JS.Class({
   },
 
   render: function(data_orig) {
-    var data, tooltip;
+    var data, tooltip, tooltip_class;
 
     data = Eventoverse.Utils.mergeData(data_orig);
-    tooltip = new Eventoverse.Graphs.Tooltip(this.canvas, this.args);
+    data = _.reject(data, function(i) { return i.key === "null-keeper"; });
+
+    tooltip_class = this.args.tooltip_class || Eventoverse.Graphs.Tooltip;
+
+    tooltip = new tooltip_class(this.canvas, this.args);
     tooltip.render(data);
   }
 });
@@ -30,11 +34,7 @@ this.Eventoverse.Graphs.Tooltip = new JS.Class({
       .attr('class', function(d) {
         return "data-point" + d.identifier;
       }).attr('cx', function(d, i) {
-        if (_this.args.ordinal_scale) {
-          return _this.canvas.x0(d.x);
-        } else {
-          return _this.canvas.x(d.x);
-        }
+        return _this.canvas.x(d.x);
       }).attr('cy', function(d, i) {
         return _this.canvas.y(d.y);
       }).attr('r', function() {
@@ -47,9 +47,10 @@ this.Eventoverse.Graphs.Tooltip = new JS.Class({
     var _this = this;
 
     identifier = data[0]["identifier"];
+
     this.canvas.svg.selectAll(".data-point" + identifier).remove();
     this.circles = this.canvas.svg.append('svg:g').selectAll(".data-point" + identifier).data(data);
-    this.renderCircles();
+    this.renderCircles(data);
     args = this.args;
     tipsy = {
       gravity: 'w',
@@ -71,5 +72,23 @@ this.Eventoverse.Graphs.Tooltip = new JS.Class({
 
   cleanup: function() {
     return this.circles.remove();
+  }
+});
+
+this.Eventoverse.Graphs.StackedTooltip = new JS.Class(this.Eventoverse.Graphs.Tooltip, {
+  renderCircles: function(data) {
+    var _this = this;
+
+    this.circles.enter()
+      .append('svg:circle')
+      .attr('class', function(d) {
+        return "data-point" + d.identifier;
+      }).attr('cx', function(d, i) {
+        return _this.canvas.x(d.x);
+      }).attr('cy', function(d, i) {
+        return _this.canvas.y(_this.canvas.stackedHeights[[d.x, d.y]]);
+      }).attr('r', function() {
+        return 3;
+      });
   }
 });

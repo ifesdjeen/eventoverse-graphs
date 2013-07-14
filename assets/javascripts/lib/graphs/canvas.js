@@ -1,5 +1,5 @@
-this.Eventoverse.Graphs.Canvas = (function() {
-  Canvas.prototype.defaults = {
+this.Eventoverse.Graphs.Canvas = new JS.Class({
+  defaults: {
     x: {
       caption: ""
     },
@@ -13,11 +13,12 @@ this.Eventoverse.Graphs.Canvas = (function() {
       bottom: 30,
       left: 50
     },
-    base_width: 900,
+    base_width: 800,
     base_height: 250
-  };
+  },
 
-  function Canvas(selector, attrs) {
+  initialize: function (selector, attrs) {
+    $(selector).css('width', this.defaults.base_width + "px");
     this.selector = selector;
     this.attrs = attrs;
     this.colors = d3.scale.category10();
@@ -42,30 +43,30 @@ this.Eventoverse.Graphs.Canvas = (function() {
       .attr("height", this.defaults.base_height);
 
     return this;
-  }
+  },
 
-  Canvas.prototype.addElement = function(element, args) {
+  addElement: function(element, args) {
     this.elements.push(new element(this, args));
     return this;
-  };
+  },
 
-  Canvas.prototype.xAxis = function() {
+  xAxis: function() {
     return d3.svg.axis()
       .scale(this.x)
       .orient("bottom")
       .tickSubdivide(false)
       .tickFormat(this.x_formatter);
-  };
+  },
 
-  Canvas.prototype.yAxis = function() {
+  yAxis: function() {
     return d3.svg.axis()
       .scale(this.y)
       .orient("left")
       .ticks(10)
       .tickSubdivide(1);
-  };
+  },
 
-  Canvas.prototype.prepareAxes = function() {
+  prepareAxes: function() {
     var renderedYAxis;
 
     this.axes = this.svg.append("svg:g").classed("rules", true);
@@ -91,9 +92,9 @@ this.Eventoverse.Graphs.Canvas = (function() {
       .style("text-anchor", "end")
       .text(this.attrs.y.caption || this.defaults.y.caption);
     return this;
-  };
+  },
 
-  Canvas.prototype.render = function(data, opts) {
+  render: function(data, opts) {
     this.data = data;
     this.prepareAxes();
     this.renderAxes(data);
@@ -106,24 +107,15 @@ this.Eventoverse.Graphs.Canvas = (function() {
       element.render(data);
       Eventoverse.log("Finished rendering: ", element, data);
     });
-  };
+  },
 
-  Canvas.prototype.x_formatter = d3.time.format("%H:%M");
+  x_formatter: d3.time.format("%H:%M"),
 
-  Canvas.prototype.renderAxes = function(all_data) {
-    var data, extension, extension_min, very_max, very_max_x, very_min, very_min_x, _ref;
+  renderAxes: function(all_data) {
+    var data, very_max, very_max_x, very_min, very_min_x, _ref;
 
     data = Eventoverse.Utils.mergeData(all_data);
-    this.x0 = d3.scale.ordinal().rangeRoundBands([0, this.width], .1);
-    this.x0.domain(_.map(data, function(d) {
-      return d.x;
-    }));
-    very_min = d3.min(data, function(d) {
-      return d.y;
-    });
-    very_max = d3.max(data, function(d) {
-      return d.y;
-    });
+
     very_min_x = d3.min(data, function(d) {
       return d.x;
     });
@@ -131,22 +123,53 @@ this.Eventoverse.Graphs.Canvas = (function() {
       return d.x;
     });
 
-    extension = (very_max - very_min) / 10;
-    extension_min = (very_min - extension) < 0 ? 0 : (very_min - extension);
-
     this.x.domain([very_min_x, very_max_x]);
-    this.y.domain([extension_min, very_max + extension]);
+    this.y.domain(this.domain(data));
+    // this.y.domain([extension_min, max_sum_y]);
+
     this.svg.select(".x.axis").call(this.xAxis());
     this.svg.select(".y.axis").call(this.yAxis());
     this.svg.select(".x.grid").call(this.xAxis().tickSize(-this.height, 0, 0).tickFormat(""));
     this.svg.select(".y.grid").call(this.yAxis().tickSize(-this.width, 0, 0).tickFormat(""));
     return this;
-  };
+  },
 
-  Canvas.prototype.colorForIndex = function(i) {
+  domain: function (data) {
+    var very_min, very_max, extension, extension_min;
+
+    very_min = d3.min(data, function(d) {
+      return d.y;
+    });
+    very_max = d3.max(data, function(d) {
+      return d.y;
+    });
+
+    extension = (very_max - very_min) / 10;
+    extension_min = (very_min - extension) < 0 ? 0 : (very_min - extension);
+
+    extension_min = (very_min - extension) < 0 ? 0 : (very_min - extension);
+    return [extension_min, very_max + extension];
+  },
+
+  colorForIndex: function(i) {
     return this.colors(i);
-  };
+  }
+});
 
-  return Canvas;
+this.Eventoverse.Graphs.StackedCanvas = new JS.Class(this.Eventoverse.Graphs.Canvas, {
+  domain: function(data) {
+    var domain = this.callSuper();
+    var yMappings = {};
 
-})();
+    _.each(data, function(d) {
+      if (yMappings[d.x] === undefined) {
+        yMappings[d.x] = d.y;
+      } else {
+        yMappings[d.x] += d.y;
+      }
+    });
+
+    max_sum_y = _.max(yMappings, function(d) {return d;});
+    return [domain[0], max_sum_y];
+  }
+});

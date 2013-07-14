@@ -19,11 +19,9 @@ JS.require('Eventoverse', function (a) {
   area_chart.addElement(Eventoverse.Graphs.Tooltips);
   area_chart.render(Eventoverse.RandomData.generate(20));
 
-  bar_chart = new Eventoverse.Graphs.Canvas("#bar_chart", attrs);
+  bar_chart = new Eventoverse.Graphs.StackedCanvas("#bar_chart", attrs);
   bar_chart.addElement(Eventoverse.Graphs.Histograms);
-  bar_chart.addElement(Eventoverse.Graphs.Tooltips, {
-    ordinal_scale: true
-  });
+  bar_chart.addElement(Eventoverse.Graphs.Tooltips, {tooltip_class: Eventoverse.Graphs.StackedTooltip});
 
   vals = [Eventoverse.RandomData.generate_continuous(20, "key1"),
           Eventoverse.RandomData.generate_continuous(20, "key2"),
