@@ -15,6 +15,11 @@ this.Eventoverse.Graphs.Tooltips = new JS.Class({
 
     tooltip = new tooltip_class(this.canvas, this.args);
     tooltip.render(data);
+  },
+
+  redraw: function(data) {
+    this.canvas.svg.selectAll("circle").remove();
+    this.render(data);
   }
 });
 

@@ -1,13 +1,20 @@
 this.Eventoverse.RandomData = JS.Class({});
 this.Eventoverse.RandomData.counter = 100;
 
-this.Eventoverse.RandomData.generate_one= function() {
+this.Eventoverse.RandomData.generate_one= function(_time) {
   var rnd, time;
-  time = Math.floor(new Date().getTime() / 1000);
+  if (_time) {
+    time = _time;
+  } else {
+    Eventoverse.RandomData.counter = Eventoverse.RandomData.counter + 1000;
+    time = Math.floor(new Date().getTime());
+    time = time + Eventoverse.RandomData.counter;
+  }
+
   rnd = Math.random() * 1000;
-  Eventoverse.RandomData.counter = Eventoverse.RandomData.counter + 20;
+
   return {
-    x: time + Eventoverse.RandomData.counter,
+    x: time,
     y: rnd
   };
 };

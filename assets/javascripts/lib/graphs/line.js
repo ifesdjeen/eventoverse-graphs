@@ -38,13 +38,14 @@ this.Eventoverse.Graphs.LineColors = new JS.Class({
 this.Eventoverse.Graphs.Lines = new JS.Class({
   initialize: function(canvas) {
     this.canvas = canvas;
+    this.lines = {};
   },
   renderLine: function(data, i) {
     if (data.key == "null-keeper" || _.isEmpty(data.values)) return;
 
     var line = new Eventoverse.Graphs.Line(this.canvas);
     line.render(data, i);
-    // return line.render(data, i);
+    this.lines[data.key] = line;
   },
   render: function(data) {
     var _this = this;
@@ -53,7 +54,22 @@ this.Eventoverse.Graphs.Lines = new JS.Class({
     return _.map(data, function(a, i) {
       return _this.renderLine(a, i);
     });
+  },
+  redraw: function(data) {
+    var _this = this;
+    var line;
+
+    _.each(data, function(d, i) {
+      if (_this.lines[d.key]) {
+        line = _this.lines[d.key];
+        line.redraw(d, i);
+      } else {
+        // _self.renderLine(d, i);
+      }
+    });
+
   }
+
 });
 
 this.Eventoverse.Graphs.Line = new JS.Class({
@@ -111,14 +127,31 @@ this.Eventoverse.Graphs.Line = new JS.Class({
     splitValues = this.splitGaps(data.values);
 
     _.each(splitValues, function(values) {
-      _this.path = _this.canvas.svg
-        .append("path")
-        .datum(values)
+      _this.path = _this.path || _this.canvas.svg
+        .append("g")
         .attr("class", "line eventoverse_graph_line" + identifier)
         .attr("clip-path", "url(#clip)")
-        .attr("d", _this.line())
-        .style("stroke", _this.canvas.colorForIndex(identifier));
+        .append("path");
+
+      _this.path
+        .attr("d", _this.line()(data.values))
+        .style("stroke", _this.canvas.colorForIndex(identifier))
+        .transition()
+        .duration(1)
+        .ease("linear");
     });
+  },
+  redraw: function(data) {
+    this.render(data);
+    // this.path
+    //   .data([data.values])
+    //   .attr("d", this._line)
+    //   .attr("transform", null)
+    //   .transition()
+    //   .duration(500)
+    //   // Since we don't really know where to translate it, let's assume distance between two points is same
+    //   .attr("transform", "translate(" + this.canvas.x(data.values[0].x - (data.values[2].x - data.values[1].x) ) + ",0)")
+    //   .ease("linear");
   }
 });
 

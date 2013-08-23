@@ -19,6 +19,19 @@ this.Eventoverse.Graphs.Canvas = new JS.Class({
 
   initialize: function (selector, attrs) {
     $(selector).css('width', this.defaults.base_width + "px");
+
+    var self = this;
+    this.paused = false;
+
+    $(selector).on('mouseenter', function() {
+      self.paused = true;
+    });
+
+    $(selector).on('mouseleave', function() {
+      self.paused = false;
+    });
+
+
     this.selector = selector;
     this.attrs = attrs;
     this.colors = d3.scale.category10();
@@ -96,6 +109,7 @@ this.Eventoverse.Graphs.Canvas = new JS.Class({
 
   render: function(data, opts) {
     this.data = data;
+
     this.prepareAxes();
     this.renderAxes(data);
     return _.each(this.elements, function(element) {
@@ -107,6 +121,52 @@ this.Eventoverse.Graphs.Canvas = new JS.Class({
       element.render(data);
       Eventoverse.log("Finished rendering: ", element, data);
     });
+  },
+
+  pushData: function(data) {
+    var _this = this;
+
+    _.each(data, function (i) {
+      var keyData = _.find(_this.data, function(j) { return i.key == j.key; });
+      if (keyData) {
+        _.each(i.values, function(v) {
+          keyData.values.push(v);
+        });
+      } else {
+        _this.data.push(i);
+      }
+    });
+  },
+
+
+  shiftData: function(data) {
+    var _this = this;
+
+    _.each(data, function (i) {
+      var keyData = _.find(_this.data, function(j) { return i.key == j.key; });
+      if (keyData) {
+        _.each(i.values, function(v) {
+          keyData.values.shift();
+        });
+      }
+    });
+  },
+
+  redraw: function(data) {
+    var _this = this;
+
+    _this.pushData(data);
+    _this.shiftData(data);
+
+    if (this.paused)
+      return;
+
+    this.renderAxes(this.data);
+    _.each(this.elements, function(element) {
+      element.redraw(_this.data);
+    });
+
+
   },
 
   x_formatter: d3.time.format("%H:%M"),
