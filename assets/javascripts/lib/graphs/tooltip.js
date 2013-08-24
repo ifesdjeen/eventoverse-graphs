@@ -44,6 +44,8 @@ this.Eventoverse.Graphs.Tooltip = new JS.Class({
         return _this.canvas.y(d.y);
       }).attr('r', function() {
         return 3;
+      }).style("fill", function(d) {
+        return _this.canvas.colorForIndex(d.identifier);
       });
   },
 

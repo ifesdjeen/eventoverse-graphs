@@ -233,3 +233,11 @@ this.Eventoverse.Graphs.StackedCanvas = new JS.Class(this.Eventoverse.Graphs.Can
     return [domain[0], max_sum_y];
   }
 });
+
+this.Eventoverse.Graphs.XYCanvas = new JS.Class(this.Eventoverse.Graphs.Canvas, {
+  initialize: function (selector, attrs) {
+    this.callSuper();
+
+    this.x = d3.scale.linear().range([0, this.width]);
+  }
+});
