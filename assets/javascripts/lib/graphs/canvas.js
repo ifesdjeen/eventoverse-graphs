@@ -18,6 +18,10 @@ this.Eventoverse.Graphs.Canvas = new JS.Class({
   },
 
   initialize: function (selector, attrs) {
+    // console.log(attrs);
+
+    // do we want to use the defaults or user pased settings?
+    
     $(selector).css('width', this.defaults.base_width + "px");
     this.selector = selector;
     this.attrs = attrs;
